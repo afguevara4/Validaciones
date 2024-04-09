@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Formulario{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="mt-5">Formulario</h1>
+    <form method="post" enctype="multipart/form-data" class="mt-3">
+        <input type="file" name="archivo_plano" accept=".txt">
+        <button type="submit" class="btn btn-primary mt-2">Subir Archivo</button>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th style="text-align: center;" colspan="3">Validación de parametros</th>
+                    <th style="text-align: center;" colspan="3"> Obligatorio / Opcional</th> <!-- Esto es para dejar espacio en la fila para los títulos generales -->
+                </tr>
+                <tr>
+                    <th style="text-align: center;" >Encabezado</th>
+                    <th style="text-align: center;" >Descripción del Encabezado</th>
+                    <th style="text-align: center;" >Existe el campo en el archivo muestra</th>
+                    <th style="text-align: center;" >Sistema RMC  Financieras</th>
+                    <th style="text-align: center;" >Control SB y UAFE Financieras</th>
+                    <th style="text-align: center;" >Matrices de Riesgo (RDP)  Financieras</th>
+                </tr>
+            </thead>            
+            <tbody>
+                {% for campo, descripcion, campos_minimos_obligatorios, obligatorio_sb_uafe, obligatorio_matriz_riesgo in campos_con_descripciones %}
+                <tr>
+                    <td style="text-align: center;">{{ campo }}</td>
+                    <td style="text-align: left;">{{ descripcion }}</td>
+                    <td style="text-align: center;">
+                        {% if comparacion_encabezados[loop.index0] == 'Si' %}
+                            <span style="color: green; text-decoration: solid;"><strong>Si</strong></span>
+                        {% elif comparacion_encabezados[loop.index0] == 'No existe' %}
+                            <span style="color: red;"><strong>No existe</strong></span>
+                        {% else %}
+                            {{ comparacion_encabezados[loop.index0] }}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center;">{{ campos_minimos_obligatorios if campos_minimos_obligatorios|default('') }}</td>
+                    <td style="text-align: center;">{{ obligatorio_sb_uafe if obligatorio_sb_uafe|default('') }}</td>
+                    <td style="text-align: center;">{{ obligatorio_matriz_riesgo if obligatorio_matriz_riesgo|default('') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>                                    
+        </table>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th style="text-align: center;" colspan="3">Parametros que no existen en el archivo plano</th>
+                </tr>
+                <tr>
+                    <th style="text-align: center;"> Campo </th>
+                    <th style="text-align: center;" > Descripción </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for encabezado in encabezados_no_coincidentes_plano %}
+                    <tr>
+                        <td style="color: red; text-align: center;"><strong>{{ encabezado }}</strong></td>
+                        <td style="color: red;" ><strong>El campo no existe en el archivo Excel</strong></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </form>  
+</div>
+{% endblock %}

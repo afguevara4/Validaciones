@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Mostrar Excel{% endblock %}
+
+{% block body %}
+<div class="container py-3">
+    <h1>Datos de la hoja {{ datos.name }}</h1>
+    {% if datos %}
+        <!-- Mostrar los datos en una tabla -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                {{ datos | safe }} <!-- Utiliza | safe para renderizar HTML -->
+            </table>
+        </div>
+    {% else %}
+        <p>No se han podido cargar los datos de la hoja del archivo Excel.</p>
+    {% endif %}
+</div>
+{% endblock %}
